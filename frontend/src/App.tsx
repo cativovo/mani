@@ -1,33 +1,55 @@
-import { Greet } from "@wails/go/main/App";
-import { useState } from "react";
+import { Editor } from "@monaco-editor/react";
+import { ChangeEvent, useState } from "react";
 import "./App.css";
-import { Button } from "@/components/shadcn/button";
 
 function App() {
-  const [resultText, setResultText] = useState(
-    "Please enter your name below 👇",
-  );
-  const [name, setName] = useState("");
-  const updateName = (e: any) => setName(e.target.value);
-  const updateResultText = (result: string) => setResultText(result);
+  const [json, setJson] = useState("// insert here");
 
-  function greet() {
-    Greet(name).then(updateResultText);
+  function formatJson(input: string): string {
+    try {
+      const parsed = JSON.parse(input);
+      return JSON.stringify(parsed, null, 2);
+    } catch (err) {
+      console.error(err);
+      return input;
+    }
+  }
+
+  function handleUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result;
+        if (typeof result === "string") {
+          setJson(formatJson(result));
+        }
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
+  function handleEditorChange(v?: string) {
+    setJson(v ?? "");
   }
 
   return (
-    <div>
-      <div className="text-red-600">{resultText}</div>
-      <div>
-        <input
-          onChange={updateName}
-          autoComplete="off"
-          name="input"
-          type="text"
+    <>
+      <label htmlFor="upload">
+        <span>upload file</span>
+        <input type="file" id="upload" accept="json" onChange={handleUpload} />
+      </label>
+      <div className="h-[90vh] w-screen">
+        <Editor
+          defaultLanguage="json"
+          value={json}
+          onChange={handleEditorChange}
+          onValidate={console.log}
         />
-        <Button onClick={greet}>Greet</Button>
       </div>
-    </div>
+    </>
   );
 }
 
