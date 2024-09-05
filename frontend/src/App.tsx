@@ -1,13 +1,12 @@
+import CopyButton from "@/components/CopyButton";
+import JQFilter from "@/components/JQFilter";
 import JSONHighlighter from "@/components/JSONHighlighter";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
-import { Textarea } from "@/components/shadcn/textarea";
-import debounce from "@/lib/debounce";
+import { Toaster } from "@/components/shadcn/sonner";
 import { Editor } from "@monaco-editor/react";
 import { Query } from "@wails/go/main/App";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useDeferredValue, useState } from "react";
 import "./App.css";
-import CopyButton from "@/components/CopyButton";
-import { Toaster } from "@/components/shadcn/sonner";
 
 const editorOptions = {
   minimap: { enabled: false },
@@ -22,6 +21,7 @@ const editorOptions = {
 function App() {
   const [json, setJson] = useState("// insert here");
   const [jqResult, setJQResult] = useState("");
+  const deferredJQResult = useDeferredValue(jqResult);
 
   function formatJson(input: string): string {
     try {
@@ -52,13 +52,10 @@ function App() {
     setJson(v ?? "");
   }
 
-  async function handleFilterChange(e: ChangeEvent<HTMLTextAreaElement>) {
-    const filter = e.target.value || ".";
+  async function handleFilterChange(filter: string) {
     const result = await Query(json, filter);
     setJQResult(formatJson(result));
   }
-
-  const debouncedHandleFilterChange = debounce(handleFilterChange);
 
   return (
     <>
@@ -86,17 +83,13 @@ function App() {
             />
           </div>
           <div className="w-[50vw] h-full px-2 flex flex-col gap-2">
-            <Textarea
-              className="resize-none h-24"
-              placeholder="your query here"
-              onChange={debouncedHandleFilterChange}
-            />
+            <JQFilter onFilterChange={handleFilterChange} />
             <ScrollArea className="w-full h-[calc(100%-theme(space.24))] px-2 py-4 border relative group">
               <CopyButton
                 toCopy={jqResult}
                 className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4"
               />
-              <JSONHighlighter json={jqResult} />
+              <JSONHighlighter json={deferredJQResult} />
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </div>
