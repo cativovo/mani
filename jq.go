@@ -43,7 +43,6 @@ func processJSON(j string, filter string) string {
 		}
 
 		result.Write(b)
-		result.WriteString("\n")
 	}
 
 	return result.String()
