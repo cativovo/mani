@@ -7,15 +7,15 @@ import (
 	"github.com/itchyny/gojq"
 )
 
-func processJSON(j string, filter string) string {
+func runQuery(j string, queryString string) string {
 	var result strings.Builder
 
-	var input map[string]any
+	var input any
 	if err := json.Unmarshal([]byte(j), &input); err != nil {
 		return err.Error()
 	}
 
-	query, err := gojq.Parse(filter)
+	query, err := gojq.Parse(queryString)
 	if err != nil {
 		return err.Error()
 	}

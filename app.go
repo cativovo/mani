@@ -20,6 +20,6 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) Query(j string, filter string) string {
-	return processJSON(j, filter)
+func (a *App) Query(j string, queryString string) string {
+	return runQuery(j, queryString)
 }
