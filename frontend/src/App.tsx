@@ -1,11 +1,11 @@
+import JSONHighlighter from "@/components/JSONHighlighter";
+import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 import { Textarea } from "@/components/shadcn/textarea";
+import debounce from "@/lib/debounce";
 import { Editor } from "@monaco-editor/react";
 import { Query } from "@wails/go/main/App";
 import { ChangeEvent, useState } from "react";
 import "./App.css";
-import JSONHighlighter from "./components/JSONHighlighter";
-import { ScrollArea, ScrollBar } from "./components/shadcn/scroll-area";
-import debounce from "./lib/debounce";
 
 const editorOptions = {
   minimap: { enabled: false },
