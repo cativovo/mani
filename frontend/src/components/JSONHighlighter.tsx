@@ -1,6 +1,7 @@
 import hljs from "highlight.js/lib/core";
 import json from "highlight.js/lib/languages/json";
 import "highlight.js/styles/vs.min.css";
+import { memo } from "react";
 
 hljs.registerLanguage("json", json);
 
@@ -19,4 +20,4 @@ function JSONHighlighter(props: Props) {
   );
 }
 
-export default JSONHighlighter;
+export default memo(JSONHighlighter);
