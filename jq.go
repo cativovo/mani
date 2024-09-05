@@ -12,8 +12,7 @@ func processJSON(j string, filter string) string {
 
 	var input map[string]any
 	if err := json.Unmarshal([]byte(j), &input); err != nil {
-		result.WriteString(err.Error())
-		return result.String()
+		return err.Error()
 	}
 
 	query, err := gojq.Parse(filter)
@@ -28,18 +27,14 @@ func processJSON(j string, filter string) string {
 		if !ok {
 			break
 		}
-		if err, ok := v.(error); ok {
-			if err != nil {
-				result.Reset()
-				result.WriteString(err.Error())
-				break
-			}
+
+		if err, ok := v.(error); ok && err != nil {
+			return err.Error()
 		}
+
 		b, err := json.Marshal(v)
 		if err != nil {
-			result.Reset()
-			result.WriteString(err.Error())
-			break
+			return err.Error()
 		}
 
 		result.Write(b)

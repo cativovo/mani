@@ -23,9 +23,11 @@ func TestProcessJSON(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		got := processJSON(input, testCase.filter)
-		if got != testCase.want {
-			t.Errorf("got %q, want %q", got, testCase.want)
-		}
+		t.Run(testCase.name, func(t *testing.T) {
+			got := processJSON(input, testCase.filter)
+			if got != testCase.want {
+				t.Errorf("got %q, want %q", got, testCase.want)
+			}
+		})
 	}
 }
