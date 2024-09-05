@@ -48,6 +48,7 @@ function App() {
         const result = e.target?.result;
         if (typeof result === "string") {
           setJson(formatJson(result));
+          setJQResult("");
         }
       };
 
