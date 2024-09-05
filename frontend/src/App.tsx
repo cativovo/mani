@@ -1,17 +1,18 @@
 import CopyButton from "@/components/CopyButton";
-import JQFilter from "@/components/JQFilter";
+import JQQuery from "@/components/JQQuery";
 import JSONHighlighter from "@/components/JSONHighlighter";
-import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
-import { Toaster } from "@/components/shadcn/sonner";
-import { Editor } from "@monaco-editor/react";
-import { Query } from "@wails/go/main/App";
-import { ChangeEvent, useDeferredValue, useState } from "react";
-import "./App.css";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/shadcn/resizable";
+import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
+import { Toaster } from "@/components/shadcn/sonner";
+import formatJson from "@/lib/formatJson";
+import { Editor } from "@monaco-editor/react";
+import { Query } from "@wails/go/main/App";
+import { ChangeEvent, useDeferredValue, useState } from "react";
+import "./App.css";
 
 const editorOptions = {
   minimap: { enabled: false },
@@ -29,15 +30,6 @@ function App() {
   const [json, setJson] = useState("// insert here");
   const [jqResult, setJQResult] = useState("");
   const deferredJQResult = useDeferredValue(jqResult);
-
-  function formatJson(input: string): string {
-    try {
-      const parsed = JSON.parse(input);
-      return JSON.stringify(parsed, null, 2);
-    } catch (err) {
-      return input;
-    }
-  }
 
   function handleUpload(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -60,8 +52,8 @@ function App() {
     setJson(v ?? "");
   }
 
-  async function handleFilterChange(filter: string) {
-    const result = await Query(json, filter);
+  async function handleQueryChange(queryString: string) {
+    const result = await Query(json, queryString);
     setJQResult(formatJson(result));
   }
 
@@ -94,7 +86,7 @@ function App() {
             <ResizablePanel defaultSize={50} className="flex flex-col gap-2">
               <ResizablePanelGroup direction="vertical">
                 <ResizablePanel defaultSize={20}>
-                  <JQFilter onFilterChange={handleFilterChange} />
+                  <JQQuery onQueryChange={handleQueryChange} />
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={80} className="p-2">

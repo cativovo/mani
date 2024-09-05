@@ -4,18 +4,18 @@ import CopyButton from "./CopyButton";
 import { Textarea } from "./shadcn/textarea";
 
 type Props = {
-  onFilterChange(filter: string): void;
+  onQueryChange(filter: string): void;
 };
 
-function JQFilter(props: Props) {
+function JQQuery(props: Props) {
   const [value, setValue] = useState("");
-  const debouncedFilterChange = useCallback(debounce(props.onFilterChange), [
-    props.onFilterChange,
+  const debouncedQueryChange = useCallback(debounce(props.onQueryChange), [
+    props.onQueryChange,
   ]);
 
   function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setValue(e.target.value);
-    debouncedFilterChange(e.target.value || ".");
+    debouncedQueryChange(e.target.value || ".");
   }
 
   return (
@@ -34,4 +34,4 @@ function JQFilter(props: Props) {
   );
 }
 
-export default JQFilter;
+export default JQQuery;
