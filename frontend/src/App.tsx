@@ -7,15 +7,22 @@ import { Editor } from "@monaco-editor/react";
 import { Query } from "@wails/go/main/App";
 import { ChangeEvent, useDeferredValue, useState } from "react";
 import "./App.css";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/shadcn/resizable";
 
 const editorOptions = {
   minimap: { enabled: false },
-  scrollBeyondLastLine: false,
+  tabSize: 2,
+  overviewRulerLanes: 0,
   scrollbar: {
-    verticalScrollbarSize: 6,
-    horizontalScrollbarSize: 6,
+    verticalScrollbarSize: 4,
+    horizontalScrollbarSize: 4,
     useShadows: false,
   },
+  scrollBeyondLastLine: false,
 };
 
 function App() {
@@ -71,28 +78,37 @@ function App() {
             />
           </label>
         </div>
-        <div className="flex h-[calc(100%-theme(space.14))] py-2">
-          <div className="w-[50vw] px-2">
-            <Editor
-              defaultLanguage="json"
-              value={json}
-              onChange={handleEditorChange}
-              onValidate={console.log}
-              options={editorOptions}
-              className="border py-2"
-            />
-          </div>
-          <div className="w-[50vw] h-full px-2 flex flex-col gap-2">
-            <JQFilter onFilterChange={handleFilterChange} />
-            <ScrollArea className="w-full h-[calc(100%-theme(space.24))] px-2 py-4 border relative group">
-              <CopyButton
-                toCopy={jqResult}
-                className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4"
+        <div className="h-[calc(100%-theme(space.14))]">
+          <ResizablePanelGroup direction="horizontal" className="py-2">
+            <ResizablePanel defaultSize={50} className="px-2">
+              <Editor
+                defaultLanguage="json"
+                value={json}
+                onChange={handleEditorChange}
+                onValidate={console.log}
+                options={editorOptions}
               />
-              <JSONHighlighter json={deferredJQResult} />
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={50} className="flex flex-col gap-2">
+              <ResizablePanelGroup direction="vertical">
+                <ResizablePanel defaultSize={20}>
+                  <JQFilter onFilterChange={handleFilterChange} />
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={80} className="p-2">
+                  <ScrollArea className="p-2 relative group h-full">
+                    <CopyButton
+                      toCopy={jqResult}
+                      className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4"
+                    />
+                    <JSONHighlighter json={deferredJQResult} />
+                    <ScrollBar orientation="horizontal" />
+                  </ScrollArea>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       </div>
       <Toaster />
