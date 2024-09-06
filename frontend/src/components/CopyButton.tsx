@@ -6,21 +6,22 @@ import { ClipboardSetText } from "@wails/runtime/runtime";
 
 type Props = {
   className?: string;
-  toCopy: string;
+  toCopy(): string;
 };
 
 function CopyButton(props: Props) {
   const [copyCount, setCopyCount] = useState(0);
 
   async function handleClick() {
-    if (props.toCopy === "") {
+    const content = props.toCopy();
+    if (content === "") {
       return;
     }
 
     const newCopyCount = copyCount + 1;
     setCopyCount(newCopyCount);
 
-    await ClipboardSetText(props.toCopy);
+    await ClipboardSetText(content);
 
     const message =
       newCopyCount === 1 ? "Copied!" : `Copied ${newCopyCount} times!`;

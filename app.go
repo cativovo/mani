@@ -20,6 +20,6 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) Query(j string, queryString string) string {
-	return runQuery(j, queryString)
+func (a *App) Query(j string, queryString string, flags JQFlags) string {
+	return RunQuery(j, queryString, flags)
 }

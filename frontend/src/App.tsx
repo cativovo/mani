@@ -11,7 +11,8 @@ import { Toaster } from "@/components/shadcn/sonner";
 import formatJson from "@/lib/formatJson";
 import { Editor } from "@monaco-editor/react";
 import { Query } from "@wails/go/main/App";
-import { ChangeEvent, useDeferredValue, useState } from "react";
+import { main } from "@wails/go/models";
+import { ChangeEvent, useDeferredValue, useRef, useState } from "react";
 import "./App.css";
 
 const editorOptions = {
@@ -30,17 +31,26 @@ function App() {
   const [json, setJson] = useState("// insert here");
   const [jqResult, setJQResult] = useState("");
   const deferredJQResult = useDeferredValue(jqResult);
+  const jqFlagsRef = useRef<main.JQFlags>({
+    compact: false,
+  });
+  const queryStringRef = useRef(".");
 
   function handleUpload(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
 
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result;
-        if (typeof result === "string") {
-          setJson(formatJson(result));
-          setJQResult("");
+      reader.onload = async (e) => {
+        const fileContents = e.target?.result;
+        if (typeof fileContents === "string") {
+          setJson(formatJson(fileContents));
+          const result = await Query(
+            fileContents,
+            queryStringRef.current,
+            jqFlagsRef.current,
+          );
+          setJQResult(result);
         }
       };
 
@@ -53,8 +63,19 @@ function App() {
   }
 
   async function handleQueryChange(queryString: string) {
-    const result = await Query(json, queryString);
-    setJQResult(formatJson(result));
+    const result = await Query(json, queryString, jqFlagsRef.current);
+    setJQResult(result);
+    queryStringRef.current = queryString;
+  }
+
+  async function setFlag(flag: keyof main.JQFlags, value: boolean) {
+    jqFlagsRef.current[flag] = value;
+    const result = await Query(
+      json,
+      queryStringRef.current,
+      jqFlagsRef.current,
+    );
+    setJQResult(result);
   }
 
   return (
@@ -86,13 +107,16 @@ function App() {
             <ResizablePanel defaultSize={50} className="flex flex-col gap-2">
               <ResizablePanelGroup direction="vertical">
                 <ResizablePanel defaultSize={20}>
-                  <JQQuery onQueryChange={handleQueryChange} />
+                  <JQQuery
+                    onQueryChange={handleQueryChange}
+                    onFlagChange={setFlag}
+                  />
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={80} className="p-2">
                   <ScrollArea className="p-2 relative group h-full">
                     <CopyButton
-                      toCopy={jqResult}
+                      toCopy={() => jqResult}
                       className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4"
                     />
                     <JSONHighlighter json={deferredJQResult} />

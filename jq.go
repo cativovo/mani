@@ -7,7 +7,20 @@ import (
 	"github.com/itchyny/gojq"
 )
 
-func runQuery(j string, queryString string) string {
+type JQFlags struct {
+	Compact bool `json:"compact"`
+}
+
+func unmarshalJSON(data any, compact bool) ([]byte, error) {
+	if compact {
+		return json.Marshal(data)
+	}
+
+	indent := strings.Repeat(" ", 2)
+	return json.MarshalIndent(data, "", indent)
+}
+
+func RunQuery(j string, queryString string, flags JQFlags) string {
 	var result strings.Builder
 
 	var input any
@@ -32,7 +45,7 @@ func runQuery(j string, queryString string) string {
 			return err.Error()
 		}
 
-		b, err := json.Marshal(v)
+		b, err := unmarshalJSON(v, flags.Compact)
 		if err != nil {
 			return err.Error()
 		}

@@ -12,29 +12,51 @@ func TestRunQuery(t *testing.T) {
 
 	testCases := []struct {
 		name   string
-		input  string
+		json   string
 		filter string
+		flags  JQFlags
 	}{
 		{
 			name:   "valid filter",
-			input:  keyValueInput,
+			json:   keyValueInput,
 			filter: ".name",
 		},
 		{
 			name:   "invalid filter",
-			input:  keyValueInput,
+			json:   keyValueInput,
 			filter: "jkjkjkjkjkjk",
 		},
 		{
-			name:   "array input",
-			input:  arrayInput,
+			name:   "indent array input",
+			json:   arrayInput,
 			filter: ".",
+		},
+		{
+			name:   "indent key value input",
+			json:   keyValueInput,
+			filter: ".",
+		},
+		{
+			name:   "compact array input",
+			json:   arrayInput,
+			filter: ".",
+			flags: JQFlags{
+				Compact: true,
+			},
+		},
+		{
+			name:   "compact key value input",
+			json:   keyValueInput,
+			filter: ".",
+			flags: JQFlags{
+				Compact: true,
+			},
 		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			result := runQuery(testCase.input, testCase.filter)
+			result := RunQuery(testCase.json, testCase.filter, testCase.flags)
 			snaps.MatchSnapshot(t, result)
 		})
 	}
