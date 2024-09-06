@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -10,38 +11,46 @@ import (
 
 func TestRunQuery(t *testing.T) {
 	bulbasaur := getJSON(t, "bulbasaur.json")
+	charmander := getJSON(t, "charmander.json")
+	squirtle := getJSON(t, "squirtle.json")
 	gen1Starters := getJSON(t, "gen1-starters.json")
 
 	testCases := []struct {
-		name   string
-		json   string
-		filter string
-		flags  JQFlags
+		name         string
+		json         string
+		filter       string
+		flags        JQFlags
+		validateJSON bool
 	}{
 		{
-			name:   "valid filter",
-			json:   bulbasaur,
-			filter: ".name",
+			name:         "valid filter",
+			json:         bulbasaur,
+			filter:       ".name",
+			validateJSON: true,
 		},
 		{
-			name:   "invalid filter",
-			json:   bulbasaur,
-			filter: "jkjkjkjkjkjk",
+			name:         "invalid filter",
+			json:         bulbasaur,
+			filter:       "jkjkjkjkjkjk",
+			validateJSON: false,
 		},
 		{
-			name:   "indent array input",
-			json:   gen1Starters,
-			filter: ".",
+			name:         "indent array input",
+			json:         gen1Starters,
+			filter:       ".",
+			validateJSON: true,
 		},
 		{
-			name:   "indent key value input",
-			json:   bulbasaur,
-			filter: ".",
+			name:         "indent key value input",
+			json:         bulbasaur,
+			filter:       ".",
+			validateJSON: true,
 		},
 		{
-			name:   "unpack array",
-			json:   gen1Starters,
-			filter: ".[]",
+			name:         "unpack array",
+			json:         gen1Starters,
+			filter:       ".[]",
+			validateJSON: false,
 		},
 		{
 			name:   "compact array input",
@@ -50,6 +59,7 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Compact: true,
 			},
+			validateJSON: true,
 		},
 		{
 			name:   "compact key value input",
@@ -58,6 +68,7 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Compact: true,
 			},
+			validateJSON: false,
 		},
 		{
 			name:   "compact unpack array",
@@ -66,6 +77,7 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Compact: true,
 			},
+			validateJSON: false,
 		},
 		{
 			name:   "cooked",
@@ -74,6 +86,7 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Raw: false,
 			},
+			validateJSON: false,
 		},
 		{
 			name:   "it's fucking raw",
@@ -82,12 +95,37 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Raw: true,
 			},
+			validateJSON: false,
+		},
+		{
+			name:   "slurp",
+			json:   bulbasaur + charmander + squirtle,
+			filter: ".",
+			flags: JQFlags{
+				Slurp: true,
+			},
+			validateJSON: true,
+		},
+		{
+			name:   "compact and slurp",
+			json:   bulbasaur + charmander + squirtle,
+			filter: ".",
+			flags: JQFlags{
+				Compact: true,
+				Slurp:   true,
+			},
+			validateJSON: true,
 		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			result := RunQuery(testCase.json, testCase.filter, testCase.flags)
+
+			if testCase.validateJSON && !json.Valid([]byte(result)) {
+				t.Error("produced an invalid json")
+			}
+
 			snaps.MatchSnapshot(t, result)
 		})
 	}

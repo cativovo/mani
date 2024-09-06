@@ -5,6 +5,7 @@ export type PartialJQFlags = Partial<main.JQFlags>;
 const defaultFlags: main.JQFlags = {
   compact: false,
   raw: false,
+  slurp: false,
 };
 
 export default function generateJQFlags(flags?: PartialJQFlags): main.JQFlags {

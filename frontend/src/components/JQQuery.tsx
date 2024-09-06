@@ -25,6 +25,10 @@ const flags: Record<keyof main.JQFlags, FlagData> = {
     label: "Raw",
     flag: "-r",
   },
+  slurp: {
+    label: "Slurp",
+    flag: "-s",
+  },
 };
 
 function getToCopy(query: string, jqFlags: typeof flags): string {
