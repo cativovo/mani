@@ -51,7 +51,8 @@ func RunQuery(j string, queryString string, flags JQFlags) string {
 		}
 
 		result.Write(b)
+		result.WriteString("\n")
 	}
 
-	return result.String()
+	return strings.TrimSpace(result.String())
 }

@@ -37,6 +37,11 @@ func TestRunQuery(t *testing.T) {
 			filter: ".",
 		},
 		{
+			name:   "unpack array",
+			json:   arrayInput,
+			filter: ".[]",
+		},
+		{
 			name:   "compact array input",
 			json:   arrayInput,
 			filter: ".",
@@ -48,6 +53,14 @@ func TestRunQuery(t *testing.T) {
 			name:   "compact key value input",
 			json:   keyValueInput,
 			filter: ".",
+			flags: JQFlags{
+				Compact: true,
+			},
+		},
+		{
+			name:   "compact unpack array",
+			json:   arrayInput,
+			filter: ".[]",
 			flags: JQFlags{
 				Compact: true,
 			},

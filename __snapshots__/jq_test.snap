@@ -127,3 +127,54 @@ function not defined: jkjkjkjkjkjk/0
 [TestRunQuery/compact_key_value_input - 1]
 {"abilities":[{"description":"Powers up Grass-type moves when the Pokémon's HP is low.","name":"Overgrow"},{"description":"Boosts the Pokémon's Speed stat in sunny weather.","hidden":true,"name":"Chlorophyll"}],"description":"Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun's rays, the seed grows progressively larger.","evolution":{"evolves_to":{"id":2,"name":"Ivysaur"},"level":16},"id":1,"moves":[{"accuracy":100,"name":"Tackle","power":40,"pp":35,"type":"Normal"},{"accuracy":100,"name":"Vine Whip","power":45,"pp":25,"type":"Grass"},{"accuracy":90,"name":"Leech Seed","power":null,"pp":10,"type":"Grass"},{"accuracy":100,"name":"Growl","power":null,"pp":40,"type":"Normal"}],"name":"Bulbasaur","stats":{"attack":49,"defense":49,"hp":45,"special_attack":65,"special_defense":65,"speed":45},"type":["Grass","Poison"]}
 ---
+
+[TestRunQuery/unpack_array - 1]
+{
+  "name": "bulbasaur",
+  "url": "https://pokeapi.co/api/v2/pokemon/1/"
+}
+{
+  "name": "ivysaur",
+  "url": "https://pokeapi.co/api/v2/pokemon/2/"
+}
+{
+  "name": "venusaur",
+  "url": "https://pokeapi.co/api/v2/pokemon/3/"
+}
+{
+  "name": "charmander",
+  "url": "https://pokeapi.co/api/v2/pokemon/4/"
+}
+{
+  "name": "charmeleon",
+  "url": "https://pokeapi.co/api/v2/pokemon/5/"
+}
+{
+  "name": "charizard",
+  "url": "https://pokeapi.co/api/v2/pokemon/6/"
+}
+{
+  "name": "squirtle",
+  "url": "https://pokeapi.co/api/v2/pokemon/7/"
+}
+{
+  "name": "wartortle",
+  "url": "https://pokeapi.co/api/v2/pokemon/8/"
+}
+{
+  "name": "blastoise",
+  "url": "https://pokeapi.co/api/v2/pokemon/9/"
+}
+---
+
+[TestRunQuery/compact_unpack_array - 1]
+{"name":"bulbasaur","url":"https://pokeapi.co/api/v2/pokemon/1/"}
+{"name":"ivysaur","url":"https://pokeapi.co/api/v2/pokemon/2/"}
+{"name":"venusaur","url":"https://pokeapi.co/api/v2/pokemon/3/"}
+{"name":"charmander","url":"https://pokeapi.co/api/v2/pokemon/4/"}
+{"name":"charmeleon","url":"https://pokeapi.co/api/v2/pokemon/5/"}
+{"name":"charizard","url":"https://pokeapi.co/api/v2/pokemon/6/"}
+{"name":"squirtle","url":"https://pokeapi.co/api/v2/pokemon/7/"}
+{"name":"wartortle","url":"https://pokeapi.co/api/v2/pokemon/8/"}
+{"name":"blastoise","url":"https://pokeapi.co/api/v2/pokemon/9/"}
+---
