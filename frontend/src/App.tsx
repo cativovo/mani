@@ -1,5 +1,5 @@
 import CopyButton from "@/components/CopyButton";
-import JQQuery from "@/components/JQQuery";
+import JQQuery, { JQQueryRef } from "@/components/JQQuery";
 import JSONHighlighter from "@/components/JSONHighlighter";
 import {
   ResizableHandle,
@@ -10,9 +10,9 @@ import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 import { Toaster } from "@/components/shadcn/sonner";
 import formatJson from "@/lib/formatJson";
 import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
+import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
 import { Query } from "@wails/go/main/App";
-import { main } from "@wails/go/models";
 import { ChangeEvent, useDeferredValue, useRef, useState } from "react";
 import "./App.css";
 
@@ -34,31 +34,27 @@ function App() {
   const deferredJQResult = useDeferredValue(jqResult);
   const jqFlagsRef = useRef<PartialJQFlags>({});
   const queryStringRef = useRef(".");
+  const jqQueryRef = useRef<JQQueryRef>(null);
 
   function handleEditorChange(v?: string) {
     setJson(v ?? "");
   }
 
-  function handleUpload(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  async function handleUpload(e: ChangeEvent<HTMLInputElement>) {
+    const promises = [...(e.target.files ?? [])].map(readFileContents);
+    const results = await Promise.all(promises);
+    const slurp = jqFlagsRef.current.slurp || results.length > 1;
+    const fileContents = results.join("");
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const fileContents = e.target?.result;
-        if (typeof fileContents === "string") {
-          setJson(formatJson(fileContents));
-          const result = await Query(
-            fileContents,
-            queryStringRef.current,
-            generateJQFlags(jqFlagsRef.current),
-          );
-          setJQResult(result);
-        }
-      };
+    setJson(formatJson(fileContents));
+    jqQueryRef.current?.setFlag("slurp", slurp);
+    const result = await Query(
+      fileContents,
+      queryStringRef.current,
+      generateJQFlags({ ...jqFlagsRef.current, slurp }),
+    );
 
-      reader.readAsText(file);
-    }
+    setJQResult(result);
   }
 
   async function handleQueryChange(queryString: string) {
@@ -71,8 +67,8 @@ function App() {
     queryStringRef.current = queryString;
   }
 
-  async function handleFlagChange(flag: keyof main.JQFlags, value: boolean) {
-    jqFlagsRef.current[flag] = value;
+  async function handleFlagChange(enabledFlags: PartialJQFlags) {
+    jqFlagsRef.current = enabledFlags;
     const result = await Query(
       json,
       queryStringRef.current,
@@ -90,8 +86,9 @@ function App() {
             <input
               type="file"
               id="upload"
-              accept="json"
+              accept="application/json"
               onChange={handleUpload}
+              multiple
             />
           </label>
         </div>
@@ -113,6 +110,7 @@ function App() {
                   <JQQuery
                     onQueryChange={handleQueryChange}
                     onFlagChange={handleFlagChange}
+                    ref={jqQueryRef}
                   />
                 </ResizablePanel>
                 <ResizableHandle />
