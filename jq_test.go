@@ -65,6 +65,22 @@ func TestRunQuery(t *testing.T) {
 				Compact: true,
 			},
 		},
+		{
+			name:   "cooked",
+			json:   arrayInput,
+			filter: ".[].name",
+			flags: JQFlags{
+				Raw: false,
+			},
+		},
+		{
+			name:   "it's fucking raw",
+			json:   arrayInput,
+			filter: ".[].name",
+			flags: JQFlags{
+				Raw: true,
+			},
+		},
 	}
 
 	for _, testCase := range testCases {

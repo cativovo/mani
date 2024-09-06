@@ -178,3 +178,27 @@ function not defined: jkjkjkjkjkjk/0
 {"name":"wartortle","url":"https://pokeapi.co/api/v2/pokemon/8/"}
 {"name":"blastoise","url":"https://pokeapi.co/api/v2/pokemon/9/"}
 ---
+
+[TestRunQuery/it's_fucking_raw - 1]
+bulbasaur
+ivysaur
+venusaur
+charmander
+charmeleon
+charizard
+squirtle
+wartortle
+blastoise
+---
+
+[TestRunQuery/cooked - 1]
+"bulbasaur"
+"ivysaur"
+"venusaur"
+"charmander"
+"charmeleon"
+"charizard"
+"squirtle"
+"wartortle"
+"blastoise"
+---

@@ -13,14 +13,17 @@ type Props = {
 type FlagData = {
   label: string;
   flag: string;
-  enabled: boolean;
+  enabled?: boolean;
 };
 
 const flags: Record<keyof main.JQFlags, FlagData> = {
   compact: {
     label: "Compact",
     flag: "-c",
-    enabled: false,
+  },
+  raw: {
+    label: "Raw",
+    flag: "-r",
   },
 };
 
@@ -73,15 +76,15 @@ function JQQuery(props: Props) {
         onChange={handleChange}
         value={value}
       />
-      <div className="h-1/4 flex items-center">
+      <div className="h-1/4 flex items-center gap-2">
         {Object.entries(flags).map(([flag, flagData]) => (
           <div className="flex items-center space-x-2" key={flag}>
             <Checkbox
-              id="terms"
+              id={flag}
               onCheckedChange={handleFlagChange(flag as keyof main.JQFlags)}
             />
             <label
-              htmlFor="terms"
+              htmlFor={flag}
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               {`${flagData.label} (${flagData.flag})`}

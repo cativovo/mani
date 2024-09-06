@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/itchyny/gojq"
@@ -9,6 +11,7 @@ import (
 
 type JQFlags struct {
 	Compact bool `json:"compact"`
+	Raw     bool `json:"raw"`
 }
 
 func unmarshalJSON(data any, compact bool) ([]byte, error) {
@@ -45,12 +48,24 @@ func RunQuery(j string, queryString string, flags JQFlags) string {
 			return err.Error()
 		}
 
-		b, err := unmarshalJSON(v, flags.Compact)
-		if err != nil {
-			return err.Error()
+		reflectValue := reflect.ValueOf(v)
+
+		switch reflectValue.Kind() {
+		case reflect.String:
+			if flags.Raw {
+				result.WriteString(reflectValue.String())
+			} else {
+				result.WriteString(fmt.Sprintf(`"%s"`, reflectValue.String()))
+			}
+		default:
+			b, err := unmarshalJSON(v, flags.Compact)
+			if err != nil {
+				return err.Error()
+			}
+
+			result.Write(b)
 		}
 
-		result.Write(b)
 		result.WriteString("\n")
 	}
 

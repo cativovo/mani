@@ -9,6 +9,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 import { Toaster } from "@/components/shadcn/sonner";
 import formatJson from "@/lib/formatJson";
+import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import { Editor } from "@monaco-editor/react";
 import { Query } from "@wails/go/main/App";
 import { main } from "@wails/go/models";
@@ -31,10 +32,12 @@ function App() {
   const [json, setJson] = useState("// insert here");
   const [jqResult, setJQResult] = useState("");
   const deferredJQResult = useDeferredValue(jqResult);
-  const jqFlagsRef = useRef<main.JQFlags>({
-    compact: false,
-  });
+  const jqFlagsRef = useRef<PartialJQFlags>({});
   const queryStringRef = useRef(".");
+
+  function handleEditorChange(v?: string) {
+    setJson(v ?? "");
+  }
 
   function handleUpload(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -48,7 +51,7 @@ function App() {
           const result = await Query(
             fileContents,
             queryStringRef.current,
-            jqFlagsRef.current,
+            generateJQFlags(jqFlagsRef.current),
           );
           setJQResult(result);
         }
@@ -58,22 +61,22 @@ function App() {
     }
   }
 
-  function handleEditorChange(v?: string) {
-    setJson(v ?? "");
-  }
-
   async function handleQueryChange(queryString: string) {
-    const result = await Query(json, queryString, jqFlagsRef.current);
+    const result = await Query(
+      json,
+      queryString,
+      generateJQFlags(jqFlagsRef.current),
+    );
     setJQResult(result);
     queryStringRef.current = queryString;
   }
 
-  async function setFlag(flag: keyof main.JQFlags, value: boolean) {
+  async function handleFlagChange(flag: keyof main.JQFlags, value: boolean) {
     jqFlagsRef.current[flag] = value;
     const result = await Query(
       json,
       queryStringRef.current,
-      jqFlagsRef.current,
+      generateJQFlags(jqFlagsRef.current),
     );
     setJQResult(result);
   }
@@ -109,7 +112,7 @@ function App() {
                 <ResizablePanel defaultSize={20}>
                   <JQQuery
                     onQueryChange={handleQueryChange}
-                    onFlagChange={setFlag}
+                    onFlagChange={handleFlagChange}
                   />
                 </ResizablePanel>
                 <ResizableHandle />
