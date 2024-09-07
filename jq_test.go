@@ -68,7 +68,7 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Compact: true,
 			},
-			validateJSON: false,
+			validateJSON: true,
 		},
 		{
 			name:   "compact unpack array",
@@ -115,6 +115,16 @@ func TestRunQuery(t *testing.T) {
 				Slurp:   true,
 			},
 			validateJSON: true,
+		},
+		{
+			name:   "raw and slurp",
+			json:   bulbasaur + charmander + squirtle,
+			filter: ".[].name",
+			flags: JQFlags{
+				Raw:   true,
+				Slurp: true,
+			},
+			validateJSON: false,
 		},
 	}
 
