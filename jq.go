@@ -16,15 +16,6 @@ type JQFlags struct {
 	Slurp   bool `json:"slurp"`
 }
 
-func unmarshalJSON(data any, compact bool) ([]byte, error) {
-	if compact {
-		return json.Marshal(data)
-	}
-
-	indent := strings.Repeat(" ", 2)
-	return json.MarshalIndent(data, "", indent)
-}
-
 func RunQuery(j string, queryString string, flags JQFlags) string {
 	var result strings.Builder
 
@@ -34,27 +25,9 @@ func RunQuery(j string, queryString string, flags JQFlags) string {
 	}
 
 	var input any
-
-	if flags.Slurp {
-		var slurped []any
-		dec := json.NewDecoder(strings.NewReader(j))
-
-		for {
-			var v any
-			if err := dec.Decode(&v); err == io.EOF {
-				break
-			} else if err != nil {
-				return err.Error()
-			}
-
-			slurped = append(slurped, v)
-		}
-
-		input = slurped
-	} else {
-		if err := json.Unmarshal([]byte(j), &input); err != nil {
-			return err.Error()
-		}
+	input, err = getInput(j, flags.Slurp)
+	if err != nil {
+		return ""
 	}
 
 	iter := query.Run(input)
@@ -70,16 +43,11 @@ func RunQuery(j string, queryString string, flags JQFlags) string {
 		}
 
 		reflectValue := reflect.ValueOf(v)
-
 		switch reflectValue.Kind() {
 		case reflect.String:
-			if flags.Raw {
-				result.WriteString(reflectValue.String())
-			} else {
-				result.WriteString(fmt.Sprintf(`"%s"`, reflectValue.String()))
-			}
+			result.WriteString(formatString(reflectValue.String(), flags.Raw))
 		default:
-			b, err := unmarshalJSON(v, flags.Compact)
+			b, err := marshalJSON(v, flags.Compact)
 			if err != nil {
 				return err.Error()
 			}
@@ -91,4 +59,47 @@ func RunQuery(j string, queryString string, flags JQFlags) string {
 	}
 
 	return strings.TrimSpace(result.String())
+}
+
+func marshalJSON(data any, compact bool) ([]byte, error) {
+	if compact {
+		return json.Marshal(data)
+	}
+
+	indent := strings.Repeat(" ", 2)
+	return json.MarshalIndent(data, "", indent)
+}
+
+func formatString(str string, raw bool) string {
+	if raw {
+		return str
+	}
+	return fmt.Sprintf(`"%s"`, str)
+}
+
+func getInput(j string, slurp bool) (any, error) {
+	if slurp {
+		var slurpedInput []any
+		dec := json.NewDecoder(strings.NewReader(j))
+
+		for {
+			var v any
+			if err := dec.Decode(&v); err == io.EOF {
+				break
+			} else if err != nil {
+				return nil, err
+			}
+
+			slurpedInput = append(slurpedInput, v)
+		}
+
+		return slurpedInput, nil
+	}
+
+	var input any
+	if err := json.Unmarshal([]byte(j), &input); err != nil {
+		return nil, err
+	}
+
+	return input, nil
 }
