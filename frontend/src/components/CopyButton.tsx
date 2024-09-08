@@ -31,6 +31,10 @@ function CopyButton(props: Props) {
         onClick: () => setCopyCount(0),
       },
       onAutoClose: () => setCopyCount(0),
+      cancelButtonStyle: {
+        backgroundColor: "inherit",
+        color: "inherit",
+      },
     });
   }
 
