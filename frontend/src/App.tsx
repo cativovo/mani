@@ -13,6 +13,7 @@ import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
 import { GetInitialContent, Query } from "@wails/go/main/App";
+import { editor } from "monaco-editor";
 import {
   ChangeEvent,
   useDeferredValue,
@@ -22,7 +23,7 @@ import {
 } from "react";
 import "./App.css";
 
-const editorOptions = {
+const editorOptions: editor.IStandaloneEditorConstructionOptions = {
   minimap: { enabled: false },
   tabSize: 2,
   overviewRulerLanes: 0,
@@ -32,6 +33,7 @@ const editorOptions = {
     useShadows: false,
   },
   scrollBeyondLastLine: false,
+  fontSize: 16,
 };
 
 function App() {
