@@ -81,7 +81,7 @@ const JQQuery = forwardRef<JQQueryRef, Props>((props, ref) => {
     <div className="relative group h-full p-2">
       <CopyButton
         toCopy={() => getToCopy(query || ".", enabledFlags)}
-        className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4"
+        className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-4 right-4"
       />
       <Textarea
         className="resize-none h-3/4"

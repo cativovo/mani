@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"os"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -29,4 +32,28 @@ func (a *App) Query(j string, queryString string, flags JQFlags) string {
 
 func (a *App) GetInitialContent() string {
 	return a.initialContent
+}
+
+func (a *App) DownloadJQResult(result string) error {
+	path, pErr := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		DefaultFilename: "result",
+	})
+	if pErr != nil {
+		return pErr
+	}
+
+	file, fErr := os.Create(path)
+	if fErr != nil {
+		return fErr
+	}
+
+	if _, err := file.WriteString(result); err != nil {
+		return err
+	}
+
+	if err := file.Sync(); err != nil {
+		return err
+	}
+
+	return nil
 }

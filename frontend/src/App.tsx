@@ -13,8 +13,8 @@ import formatJson from "@/lib/formatJson";
 import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
-import { GetInitialContent, Query } from "@wails/go/main/App";
-import { Braces, CircleX, FolderOpenDot, X } from "lucide-react";
+import { DownloadJQResult, GetInitialContent, Query } from "@wails/go/main/App";
+import { Braces, CircleX, Download, FolderOpenDot } from "lucide-react";
 import { editor } from "monaco-editor";
 import {
   ChangeEvent,
@@ -25,6 +25,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import "./App.css";
+import { defaultToastConfig } from "./toast-config";
 
 const editorOptions: editor.IStandaloneEditorConstructionOptions = {
   minimap: { enabled: false },
@@ -68,17 +69,7 @@ function App() {
     toast.dismiss();
 
     editorErrors.forEach((error) => {
-      toast.error(error, {
-        cancel: {
-          label: <X className="h-4 w-4" />,
-          onClick: () => {},
-        },
-        cancelButtonStyle: {
-          backgroundColor: "inherit",
-          color: "inherit",
-        },
-        duration: Infinity,
-      });
+      toast.error(error, { ...defaultToastConfig, duration: Infinity });
     });
   }
 
@@ -121,6 +112,18 @@ function App() {
 
   function openFile() {
     inputFileRef.current?.click();
+  }
+
+  async function downloadJQResult() {
+    try {
+      await DownloadJQResult(jqResult);
+      toast.success("File saved!", defaultToastConfig);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message, defaultToastConfig);
+      }
+      // TODO: put error in a log file
+    }
   }
 
   useEffect(() => {
@@ -192,10 +195,16 @@ function App() {
                 <ResizableHandle />
                 <ResizablePanel defaultSize={80} className="p-2">
                   <ScrollArea className="p-2 relative group h-full">
-                    <CopyButton
-                      toCopy={() => jqResult}
-                      className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4"
-                    />
+                    <div className="absolute invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity top-2 right-4 flex flex-col gap-2">
+                      <CopyButton toCopy={() => jqResult} />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={downloadJQResult}
+                      >
+                        <Download className="text-gray-500" />
+                      </Button>
+                    </div>
                     <JSONHighlighter json={deferredJQResult} />
                     <ScrollBar orientation="horizontal" />
                   </ScrollArea>
