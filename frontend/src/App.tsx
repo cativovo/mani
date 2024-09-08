@@ -14,7 +14,7 @@ import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
 import { GetInitialContent, Query } from "@wails/go/main/App";
-import { CircleX, FolderOpenDot, X } from "lucide-react";
+import { Braces, CircleX, FolderOpenDot, X } from "lucide-react";
 import { editor } from "monaco-editor";
 import {
   ChangeEvent,
@@ -147,6 +147,16 @@ function App() {
             <FolderOpenDot className="text-gray-500" />
             <span>Open file(s)</span>
           </Button>
+          {editorErrors.length === 0 && (
+            <Button
+              variant="outline"
+              className="space-x-1"
+              onClick={() => setJson(formatJson(json))}
+            >
+              <Braces className="text-gray-500" />
+              <span>Format</span>
+            </Button>
+          )}
           {editorErrors.length > 0 && (
             <Button
               variant="destructive"
