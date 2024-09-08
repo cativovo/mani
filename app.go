@@ -6,12 +6,15 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx            context.Context
+	initialContent string
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+func NewApp(initialContent string) *App {
+	return &App{
+		initialContent: initialContent,
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -22,4 +25,8 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) Query(j string, queryString string, flags JQFlags) string {
 	return RunQuery(j, queryString, flags)
+}
+
+func (a *App) GetInitialContent() string {
+	return a.initialContent
 }

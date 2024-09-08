@@ -12,8 +12,14 @@ import formatJson from "@/lib/formatJson";
 import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
-import { Query } from "@wails/go/main/App";
-import { ChangeEvent, useDeferredValue, useRef, useState } from "react";
+import { GetInitialContent, Query } from "@wails/go/main/App";
+import {
+  ChangeEvent,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./App.css";
 
 const editorOptions = {
@@ -29,7 +35,7 @@ const editorOptions = {
 };
 
 function App() {
-  const [json, setJson] = useState("// insert here");
+  const [json, setJson] = useState("");
   const [jqResult, setJQResult] = useState("");
   const deferredJQResult = useDeferredValue(jqResult);
   const jqFlagsRef = useRef<PartialJQFlags>({});
@@ -76,6 +82,13 @@ function App() {
     );
     setJQResult(result);
   }
+
+  useEffect(() => {
+    (async () => {
+      const initialContent = await GetInitialContent();
+      setJson(formatJson(initialContent));
+    })();
+  }, []);
 
   return (
     <>
