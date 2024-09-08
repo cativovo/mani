@@ -46,6 +46,7 @@ func (a *App) DownloadJQResult(result string) error {
 	if fErr != nil {
 		return fErr
 	}
+	defer file.Close()
 
 	if _, err := file.WriteString(result); err != nil {
 		return err
