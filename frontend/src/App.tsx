@@ -1,6 +1,7 @@
 import CopyButton from "@/components/CopyButton";
 import JQQuery, { JQQueryRef } from "@/components/JQQuery";
 import JSONHighlighter from "@/components/JSONHighlighter";
+import { Button } from "@/components/shadcn/button";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,6 +14,7 @@ import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
 import { GetInitialContent, Query } from "@wails/go/main/App";
+import { FolderOpenDot } from "lucide-react";
 import { editor } from "monaco-editor";
 import {
   ChangeEvent,
@@ -43,6 +45,7 @@ function App() {
   const jqFlagsRef = useRef<PartialJQFlags>({});
   const queryStringRef = useRef(".");
   const jqQueryRef = useRef<JQQueryRef>(null);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   function handleEditorChange(v?: string) {
     setJson(v ?? "");
@@ -85,6 +88,10 @@ function App() {
     setJQResult(result);
   }
 
+  function openFile() {
+    inputFileRef.current?.click();
+  }
+
   useEffect(() => {
     (async () => {
       const initialContent = await GetInitialContent();
@@ -95,17 +102,20 @@ function App() {
   return (
     <>
       <div className="h-screen">
-        <div className="h-14 bg-red-600">
-          <label htmlFor="upload">
-            <span>upload file</span>
-            <input
-              type="file"
-              id="upload"
-              accept="application/json"
-              onChange={handleUpload}
-              multiple
-            />
-          </label>
+        <div className="h-14 bg-gray-100 flex items-center px-2">
+          <input
+            ref={inputFileRef}
+            type="file"
+            id="upload"
+            accept="application/json"
+            onChange={handleUpload}
+            multiple
+            hidden
+          />
+          <Button variant="outline" className="space-x-1" onClick={openFile}>
+            <span>Open file(s)</span>
+            <FolderOpenDot className="text-gray-500" />
+          </Button>
         </div>
         <div className="h-[calc(100%-theme(space.14))]">
           <ResizablePanelGroup direction="horizontal" className="py-2">
