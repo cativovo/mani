@@ -14,7 +14,7 @@ import generateJQFlags, { PartialJQFlags } from "@/lib/generateJQFlags";
 import readFileContents from "@/lib/readFileContents";
 import { Editor } from "@monaco-editor/react";
 import { GetInitialContent, Query } from "@wails/go/main/App";
-import { FolderOpenDot } from "lucide-react";
+import { CircleX, FolderOpenDot, X } from "lucide-react";
 import { editor } from "monaco-editor";
 import {
   ChangeEvent,
@@ -23,6 +23,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { toast } from "sonner";
 import "./App.css";
 
 const editorOptions: editor.IStandaloneEditorConstructionOptions = {
@@ -46,9 +47,39 @@ function App() {
   const queryStringRef = useRef(".");
   const jqQueryRef = useRef<JQQueryRef>(null);
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const [editorErrors, setEditorErrors] = useState<string[]>([]);
 
   function handleEditorChange(v?: string) {
     setJson(v ?? "");
+  }
+
+  function handleEditorValidate(markers: editor.IMarker[]) {
+    const errors = markers.map(
+      (marker) =>
+        `${marker.message} at line ${marker.endLineNumber}, column ${marker.endColumn}`,
+    );
+    if (errors.length === 0) {
+      toast.dismiss();
+    }
+    setEditorErrors(errors);
+  }
+
+  function showEditorErrors() {
+    toast.dismiss();
+
+    editorErrors.forEach((error) => {
+      toast.error(error, {
+        cancel: {
+          label: <X className="h-4 w-4" />,
+          onClick: () => {},
+        },
+        cancelButtonStyle: {
+          backgroundColor: "inherit",
+          color: "inherit",
+        },
+        duration: Infinity,
+      });
+    });
   }
 
   async function handleUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -102,7 +133,7 @@ function App() {
   return (
     <>
       <div className="h-screen">
-        <div className="h-14 bg-gray-100 flex items-center px-2">
+        <div className="h-14 bg-gray-100 flex items-center px-2 gap-2">
           <input
             ref={inputFileRef}
             type="file"
@@ -113,9 +144,19 @@ function App() {
             hidden
           />
           <Button variant="outline" className="space-x-1" onClick={openFile}>
-            <span>Open file(s)</span>
             <FolderOpenDot className="text-gray-500" />
+            <span>Open file(s)</span>
           </Button>
+          {editorErrors.length > 0 && (
+            <Button
+              variant="destructive"
+              className="space-x-1"
+              onClick={showEditorErrors}
+            >
+              <CircleX />
+              <span>Show error(s)</span>
+            </Button>
+          )}
         </div>
         <div className="h-[calc(100%-theme(space.14))]">
           <ResizablePanelGroup direction="horizontal" className="py-2">
@@ -124,7 +165,7 @@ function App() {
                 defaultLanguage="json"
                 value={json}
                 onChange={handleEditorChange}
-                onValidate={console.log}
+                onValidate={handleEditorValidate}
                 options={editorOptions}
               />
             </ResizablePanel>
