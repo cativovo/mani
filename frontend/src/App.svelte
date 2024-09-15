@@ -1,8 +1,11 @@
 <script lang="ts">
-	let counter = 0;
+	import Editor from "./components/Editor.svelte";
 </script>
 
-<main>
-	<h1 class="bg-red-300">{counter}</h1>
-	<button on:click={() => counter++} class="bg-blue-600">click me</button>
+<main class="h-screen w-screen">
+	<Editor
+		value={JSON.stringify({ foo: true }, null, 2)}
+		on:change={(e) => console.log(e.detail)}
+		on:validate={(e) => console.log(e.detail)}
+	/>
 </main>
