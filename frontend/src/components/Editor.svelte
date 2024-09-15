@@ -53,6 +53,7 @@
 			fontSize: 16,
 			language: "json",
 			value,
+			automaticLayout: true,
 		});
 
 		addOnChangeHandler(editor);
@@ -64,4 +65,4 @@
 	});
 </script>
 
-<div class="h-full w-full" bind:this={editorElement} />
+<div class="w-full h-full" bind:this={editorElement} />
