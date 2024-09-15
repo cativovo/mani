@@ -1,4 +1,4 @@
-import { main } from "@wails/go/models";
+import { main } from "$wails/go/models";
 
 export type PartialJQFlags = Partial<main.JQFlags>;
 
