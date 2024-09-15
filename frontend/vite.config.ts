@@ -7,8 +7,8 @@ export default defineConfig({
   plugins: [svelte()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src/"),
-      "@wails": path.resolve(__dirname, "./wailsjs/"),
+      $: path.resolve(__dirname, "./src/"),
+      $wails: path.resolve(__dirname, "./wailsjs/"),
     },
   },
 });

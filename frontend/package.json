@@ -10,8 +10,12 @@
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
+    "bits-ui": "^0.21.13",
+    "clsx": "^2.1.1",
     "highlight.js": "^11.10.0",
-    "monaco-editor": "^0.51.0"
+    "monaco-editor": "^0.51.0",
+    "tailwind-merge": "^2.5.2",
+    "tailwind-variants": "^0.2.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
