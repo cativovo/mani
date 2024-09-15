@@ -1,26 +1,27 @@
 <script lang="ts">
 	import * as monaco from "monaco-editor";
-	import { createEventDispatcher, onMount } from "svelte";
+	import { afterUpdate, createEventDispatcher, onMount } from "svelte";
 
 	export let value: string = "";
 
 	let editorElement: HTMLDivElement;
+	let editor: monaco.editor.IStandaloneCodeEditor;
 
 	const dispatch = createEventDispatcher<{
 		validate: monaco.editor.IMarker[];
 		change: string;
 	}>();
 
-	function addOnChangeHandler(editor: monaco.editor.IStandaloneCodeEditor) {
-		editor.onDidChangeModelContent(() => {
-			dispatch("change", editor.getValue());
+	function addOnChangeHandler(ed: monaco.editor.IStandaloneCodeEditor) {
+		ed.onDidChangeModelContent(() => {
+			dispatch("change", ed.getValue());
 		});
 	}
 
-	function addOnValidateHandler(editor: monaco.editor.IStandaloneCodeEditor) {
+	function addOnValidateHandler(ed: monaco.editor.IStandaloneCodeEditor) {
 		// https://github.com/suren-atoyan/monaco-react/blob/f7cac39fbad0f062dc66458831aaf57a7126dd40/src/Editor/Editor.tsx#L221
 		monaco.editor.onDidChangeMarkers((uris) => {
-			const editorUri = editor.getModel()?.uri;
+			const editorUri = ed.getModel()?.uri;
 			if (!editorUri) {
 				return;
 			}
@@ -40,7 +41,7 @@
 	}
 
 	onMount(() => {
-		const editor = monaco.editor.create(editorElement, {
+		editor = monaco.editor.create(editorElement, {
 			minimap: { enabled: false },
 			tabSize: 2,
 			overviewRulerLanes: 0,
@@ -62,6 +63,10 @@
 		return () => {
 			editor.dispose();
 		};
+	});
+
+	afterUpdate(() => {
+		editor.setValue(value);
 	});
 </script>
 
