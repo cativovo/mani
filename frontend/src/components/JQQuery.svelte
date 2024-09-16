@@ -23,22 +23,24 @@
 		},
 	};
 
-	// function getToCopy(query: string, enabledFlags: PartialJQFlags): string {
-	// 	const result = Object.entries(enabledFlags)
-	// 		.filter(([_, enabled]) => enabled)
-	// 		.map(([key]) => FLAGS[key as keyof main.JQFlags].flag);
-	//
-	// 	result.push(`"${query}"`);
-	//
-	// 	return result.join(" ");
-	// }
-
 	export let query: string = ".";
 	export let flags: main.JQFlags = {
 		compact: false,
 		raw: false,
 		slurp: false,
 	};
+
+	function getToCopy(q: string, f: main.JQFlags): string {
+		const result = Object.entries(f)
+			.filter(([_, enabled]) => enabled)
+			.map(([key]) => FLAGS[key as keyof main.JQFlags].flag);
+
+		result.push(`"${q}"`);
+
+		return result.join(" ");
+	}
+
+	$: toCopy = getToCopy(query, flags);
 
 	function handleQueryChange(e: FormTextareaEvent<Event>) {
 		const value = e.currentTarget.value;
@@ -69,7 +71,7 @@
 <div class="relative h-full group">
 	<CopyButton
 		class="absolute top-4 right-4 invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100"
-		toCopy={query}
+		{toCopy}
 	/>
 	<Textarea
 		class="h-3/4 resize-none"
