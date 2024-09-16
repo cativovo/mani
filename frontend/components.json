@@ -8,8 +8,7 @@
   },
   "aliases": {
     "components": "$/components",
-    "utils": "$/lib"
+    "utils": "$/lib/ui-utils"
   },
   "typescript": true
 }
-

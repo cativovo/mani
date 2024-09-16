@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { getFlags, getQuery, setJQPlaygroundContext } from "$/context";
-	import formatJson from "$/lib/formatJson";
-	import readFileContents from "$/lib/readFileContents";
+	import formatJson from "$/lib/format-json";
+	import readFileContents from "$/lib/read-file-contents";
+	import { Query } from "$wails/go/main/App";
+	import { afterUpdate } from "svelte";
 	import Editor from "./Editor.svelte";
 	import JqQuery from "./JQQuery.svelte";
 	import JsonHighlighter from "./JSONHighlighter.svelte";
@@ -11,8 +13,6 @@
 		ResizablePane,
 		ResizablePaneGroup,
 	} from "./ui/resizable";
-	import { Query } from "$wails/go/main/App";
-	import { afterUpdate } from "svelte";
 	import { ScrollArea, Scrollbar } from "./ui/scroll-area";
 
 	setJQPlaygroundContext();
