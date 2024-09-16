@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { main } from "$wails/go/models";
+	import CopyButton from "./CopyButton.svelte";
 	import { Checkbox } from "./ui/checkbox";
 	import { Textarea, type FormTextareaEvent } from "./ui/textarea";
 
@@ -66,6 +67,10 @@
 </script>
 
 <div class="relative h-full group">
+	<CopyButton
+		class="absolute top-4 right-4 invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100"
+		toCopy={query}
+	/>
 	<Textarea
 		class="h-3/4 resize-none"
 		placeholder="your query here"
