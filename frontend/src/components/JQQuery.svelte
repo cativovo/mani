@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { main } from "$wails/go/models";
-	import { createEventDispatcher } from "svelte";
 	import { Checkbox } from "./ui/checkbox";
 	import { Textarea, type FormTextareaEvent } from "./ui/textarea";
 

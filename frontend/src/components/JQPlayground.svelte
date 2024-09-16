@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { setJQPlaygroundContext } from "$/context";
 	import debounce from "$/lib/debounce";
 	import formatJson from "$/lib/format-json";
 	import readFileContents from "$/lib/read-file-contents";
@@ -16,8 +15,6 @@
 		ResizablePaneGroup,
 	} from "./ui/resizable";
 	import { ScrollArea, Scrollbar } from "./ui/scroll-area";
-
-	setJQPlaygroundContext();
 
 	let inputFileElement: HTMLInputElement;
 	let editor: Editor;
