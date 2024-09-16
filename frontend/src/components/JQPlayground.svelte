@@ -14,7 +14,6 @@
 		ResizablePane,
 		ResizablePaneGroup,
 	} from "./ui/resizable";
-	import { ScrollArea, Scrollbar } from "./ui/scroll-area";
 
 	let inputFileElement: HTMLInputElement;
 	let editor: Editor;
@@ -75,10 +74,7 @@
 					</ResizablePane>
 					<ResizableHandle />
 					<ResizablePane defaultSize={80}>
-						<ScrollArea class="relative p-2 h-full group">
-							<JsonHighlighter json={jqResult} />
-							<Scrollbar orientation="horizontal" />
-						</ScrollArea>
+						<JsonHighlighter json={jqResult} />
 					</ResizablePane>
 				</ResizablePaneGroup>
 			</ResizablePane>
