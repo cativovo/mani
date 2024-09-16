@@ -48,6 +48,7 @@ func main() {
 	}
 }
 
+// fix issue with piping from curl not working
 func getFile() (*os.File, error) {
 	file := os.Stdin
 	stat, err := file.Stat()

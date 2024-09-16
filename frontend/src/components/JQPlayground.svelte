@@ -3,8 +3,9 @@
 	import debounce from "$/lib/debounce";
 	import formatJson from "$/lib/format-json";
 	import readFileContents from "$/lib/read-file-contents";
-	import { Query } from "$wails/go/main/App";
+	import { GetInitialContent, Query } from "$wails/go/main/App";
 	import type { main } from "$wails/go/models";
+	import { onMount } from "svelte";
 	import Editor from "./Editor.svelte";
 	import JqQuery from "./JQQuery.svelte";
 	import JsonHighlighter from "./JSONHighlighter.svelte";
@@ -30,8 +31,7 @@
 		const target = e.target as HTMLInputElement;
 		const promises = [...(target.files ?? [])].map(readFileContents);
 		const results = await Promise.all(promises);
-		json = formatJson(results.join(""));
-		editor.setValue(json);
+		editor.setValue(formatJson(results.join("")));
 		flags = { ...flags, slurp: promises.length > 1 };
 	}
 
@@ -43,7 +43,9 @@
 
 	$: debouncedQuery(json, query, flags);
 
-	// TODO: get json from stdin
+	onMount(() => {
+		GetInitialContent().then((v) => editor.setValue(formatJson(v)));
+	});
 </script>
 
 <main class="w-screen h-screen">
