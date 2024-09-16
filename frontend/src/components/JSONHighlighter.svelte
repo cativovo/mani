@@ -7,7 +7,7 @@
 	export let json: string = "";
 </script>
 
-<pre class="p-2">
+<pre>
 <code>
 {@html hljs.highlight(json, { language: "json" }).value}
 </code>

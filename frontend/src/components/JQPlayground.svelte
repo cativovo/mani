@@ -63,27 +63,26 @@
 			on:click={() => inputFileElement.click()}>Open file(s)</Button
 		>
 	</div>
-	<ResizablePaneGroup
-		direction="horizontal"
-		class="h-[calc(100%-theme(space.14))] py-2 w-full"
-	>
-		<ResizablePane defaultSize={50}>
-			<Editor bind:value={json} bind:this={editor} />
-		</ResizablePane>
-		<ResizableHandle />
-		<ResizablePane defaultSize={50}>
-			<ResizablePaneGroup direction="vertical">
-				<ResizablePane defaultSize={20}>
-					<JqQuery bind:query bind:flags />
-				</ResizablePane>
-				<ResizableHandle />
-				<ResizablePane defaultSize={80}>
-					<ScrollArea class="relative p-2 h-full group">
-						<JsonHighlighter json={jqResult} />
-						<Scrollbar orientation="horizontal" />
-					</ScrollArea>
-				</ResizablePane>
-			</ResizablePaneGroup>
-		</ResizablePane>
-	</ResizablePaneGroup>
+	<div class="h-[calc(100%-theme(space.14))] w-full">
+		<ResizablePaneGroup direction="horizontal">
+			<ResizablePane defaultSize={50} class="p-2">
+				<Editor bind:value={json} bind:this={editor} />
+			</ResizablePane>
+			<ResizableHandle />
+			<ResizablePane defaultSize={50}>
+				<ResizablePaneGroup direction="vertical">
+					<ResizablePane defaultSize={20} class="p-2">
+						<JqQuery bind:query bind:flags />
+					</ResizablePane>
+					<ResizableHandle />
+					<ResizablePane defaultSize={80}>
+						<ScrollArea class="relative p-2 h-full group">
+							<JsonHighlighter json={jqResult} />
+							<Scrollbar orientation="horizontal" />
+						</ScrollArea>
+					</ResizablePane>
+				</ResizablePaneGroup>
+			</ResizablePane>
+		</ResizablePaneGroup>
+	</div>
 </main>

@@ -66,7 +66,7 @@
 	}
 </script>
 
-<div class="relative p-2 h-full group">
+<div class="relative h-full group">
 	<Textarea
 		class="h-3/4 resize-none"
 		placeholder="your query here"
