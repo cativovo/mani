@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { getFlags, getQuery } from "$/context";
-	import debounce from "$/lib/debounce";
 	import { main } from "$wails/go/models";
+	import { createEventDispatcher } from "svelte";
 	import { Checkbox } from "./ui/checkbox";
 	import { Textarea, type FormTextareaEvent } from "./ui/textarea";
 
@@ -34,20 +33,21 @@
 	// 	return result.join(" ");
 	// }
 
-	const query = getQuery();
-	const flags = getFlags();
+	export let query: string = ".";
+	export let flags: main.JQFlags = {
+		compact: false,
+		raw: false,
+		slurp: false,
+	};
 
-	const debouncedSetQuery = debounce((value: string) => {
+	function handleQueryChange(e: FormTextareaEvent<Event>) {
+		const value = e.currentTarget.value;
 		if (value === "") {
-			query.set(".");
+			query = ".";
 			return;
 		}
 
-		query.set(value);
-	});
-
-	function handleQueryChange(e: FormTextareaEvent<Event>) {
-		debouncedSetQuery(e.currentTarget.value);
+		query = value;
 	}
 
 	function handleFlagChange(flag: string) {
@@ -56,7 +56,7 @@
 				return;
 			}
 
-			flags.update((v) => ({ ...v, [flag]: checked }));
+			flags = { ...flags, [flag]: checked };
 		};
 	}
 
@@ -76,7 +76,7 @@
 		{#each flagsToEntries() as [key, flagData] (key)}
 			<Checkbox
 				id={key}
-				checked={$flags[key]}
+				checked={flags[key]}
 				onCheckedChange={handleFlagChange(key)}
 			/>
 			<label

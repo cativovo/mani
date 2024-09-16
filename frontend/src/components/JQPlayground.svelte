@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { getFlags, getQuery, setJQPlaygroundContext } from "$/context";
+	import { setJQPlaygroundContext } from "$/context";
+	import debounce from "$/lib/debounce";
 	import formatJson from "$/lib/format-json";
 	import readFileContents from "$/lib/read-file-contents";
 	import { Query } from "$wails/go/main/App";
-	import { afterUpdate } from "svelte";
+	import type { main } from "$wails/go/models";
 	import Editor from "./Editor.svelte";
 	import JqQuery from "./JQQuery.svelte";
 	import JsonHighlighter from "./JSONHighlighter.svelte";
@@ -18,25 +19,29 @@
 	setJQPlaygroundContext();
 
 	let inputFileElement: HTMLInputElement;
+	let editor: Editor;
 
 	let json: string;
 	let jqResult: string;
-
-	const flags = getFlags();
-	const query = getQuery();
+	let flags: main.JQFlags;
+	let query: string;
 
 	async function handleFileChange(e: Event) {
 		const target = e.target as HTMLInputElement;
 		const promises = [...(target.files ?? [])].map(readFileContents);
 		const results = await Promise.all(promises);
 		json = formatJson(results.join(""));
-
-		flags.update((v) => ({ ...v, slurp: promises.length > 1 }));
+		editor.setValue(json);
+		flags = { ...flags, slurp: promises.length > 1 };
 	}
 
-	afterUpdate(async () => {
-		jqResult = await Query(json, $query, $flags);
-	});
+	const debouncedQuery = debounce(
+		async (j: string, q: string, f: main.JQFlags) => {
+			jqResult = await Query(j, q, f);
+		},
+	);
+
+	$: debouncedQuery(json, query, flags);
 
 	// TODO: get json from stdin
 </script>
@@ -63,17 +68,13 @@
 		class="h-[calc(100%-theme(space.14))] py-2 w-full"
 	>
 		<ResizablePane defaultSize={50}>
-			<Editor
-				value={json}
-				on:change={(e) => console.log(e.detail)}
-				on:validate={(e) => console.log(e.detail)}
-			/>
+			<Editor bind:value={json} bind:this={editor} />
 		</ResizablePane>
 		<ResizableHandle />
 		<ResizablePane defaultSize={50}>
 			<ResizablePaneGroup direction="vertical">
 				<ResizablePane defaultSize={20}>
-					<JqQuery />
+					<JqQuery bind:query bind:flags />
 				</ResizablePane>
 				<ResizableHandle />
 				<ResizablePane defaultSize={80}>

@@ -1,20 +1,22 @@
 <script lang="ts">
 	import * as monaco from "monaco-editor";
-	import { afterUpdate, createEventDispatcher, onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 
 	export let value: string = "";
+	export function setValue(value: string) {
+		editor?.setValue(value);
+	}
 
 	let editorElement: HTMLDivElement;
 	let editor: monaco.editor.IStandaloneCodeEditor;
 
 	const dispatch = createEventDispatcher<{
 		validate: monaco.editor.IMarker[];
-		change: string;
 	}>();
 
 	function addOnChangeHandler(ed: monaco.editor.IStandaloneCodeEditor) {
-		ed.onDidChangeModelContent(() => {
-			dispatch("change", ed.getValue());
+		ed.onDidChangeModelContent(async () => {
+			value = ed.getValue();
 		});
 	}
 
@@ -63,10 +65,6 @@
 		return () => {
 			editor.dispose();
 		};
-	});
-
-	afterUpdate(() => {
-		editor.setValue(value);
 	});
 </script>
 
