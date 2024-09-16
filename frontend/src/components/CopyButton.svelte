@@ -34,6 +34,7 @@
 		copied && "before:-translate-x-[calc(100%-theme(space.4)+1px)]",
 		copied && "before:h-10 before:p-2 before:flex before:items-center",
 		copied && "before:border before:rounded-tl-md before:rounded-bl-md",
+		copied && "before:bg-background",
 		copied && "rounded-tl-none rounded-bl-none",
 		copied && "opacity-100 visible",
 	)}
