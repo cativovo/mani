@@ -1,14 +1,18 @@
 <script lang="ts">
-	import hljs from "highlight.js/lib/core";
-	import _json from "highlight.js/lib/languages/json";
-	import "highlight.js/styles/vs.min.css";
-	hljs.registerLanguage("json", _json);
+	import { codeToHtml } from "shiki";
 
 	export let json: string = "";
+
+	$: promise = codeToHtml(json, {
+		lang: "json",
+		theme: "github-light-default",
+	});
 </script>
 
-<pre>
-<code>
-{@html hljs.highlight(json, { language: "json" }).value}
-</code>
-</pre>
+<div>
+	{#await promise}
+		...
+	{:then value}
+		{@html value}
+	{/await}
+</div>
