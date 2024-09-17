@@ -82,13 +82,13 @@
 			<ResizablePane defaultSize={50} class="p-2">
 				<Editor bind:value={json} bind:this={editor} />
 			</ResizablePane>
-			<ResizableHandle />
+			<ResizableHandle withHandle />
 			<ResizablePane defaultSize={50}>
 				<ResizablePaneGroup direction="vertical">
 					<ResizablePane defaultSize={20} class="p-2">
 						<JqQuery bind:query bind:flags />
 					</ResizablePane>
-					<ResizableHandle />
+					<ResizableHandle withHandle />
 					<ResizablePane defaultSize={80}>
 						<JqResult value={jqResult} />
 					</ResizablePane>
