@@ -1,28 +1,11 @@
 <script lang="ts">
-	import { shikiToMonaco } from "@shikijs/monaco";
 	import * as monaco from "monaco-editor";
-	import { createHighlighter } from "shiki";
 	import { createEventDispatcher, onMount } from "svelte";
 
 	export let value: string = "";
 	export function setValue(value: string) {
 		editor?.setValue(value);
 	}
-
-	(async () => {
-		const languages = ["json"];
-
-		const highlighter = await createHighlighter({
-			themes: ["github-light-default"],
-			langs: languages,
-		});
-
-		languages.forEach((lang) => {
-			monaco.languages.register({ id: lang });
-		});
-
-		shikiToMonaco(highlighter, monaco);
-	})();
 
 	let editorElement: HTMLDivElement;
 	let editor: monaco.editor.IStandaloneCodeEditor;
