@@ -6,8 +6,15 @@
 	import { ScrollArea } from "./ui/scroll-area";
 
 	export let value: string = "";
+	export let options: monaco.editor.IStandaloneEditorConstructionOptions = {};
 	export function setValue(value: string) {
 		editor?.setValue(value);
+	}
+	export function setLanguage(language: string) {
+		const model = editor?.getModel();
+		if (model) {
+			monaco.editor.setModelLanguage(model, language);
+		}
 	}
 
 	let editorElement: HTMLDivElement;
@@ -66,8 +73,6 @@
 			tabSize: 2,
 			overviewRulerLanes: 0,
 			scrollbar: {
-				verticalScrollbarSize: 4,
-				horizontalScrollbarSize: 4,
 				useShadows: false,
 			},
 			scrollBeyondLastLine: false,
@@ -76,10 +81,13 @@
 			value,
 			automaticLayout: true,
 			theme: "github-light-default",
+			...options,
 		});
 
-		addOnChangeHandler(editor);
-		addOnValidateHandler(editor);
+		if (!options.readOnly) {
+			addOnChangeHandler(editor);
+			addOnValidateHandler(editor);
+		}
 
 		return () => {
 			editor.dispose();
@@ -92,7 +100,7 @@
 		class={isDiagnosticsOpen ? "h-3/4" : "h-full"}
 		bind:this={editorElement}
 	/>
-	{#if diagnostics.length > 0}
+	{#if !options.readOnly && diagnostics.length > 0}
 		{#if !isDiagnosticsOpen}
 			<Button
 				variant="outline"

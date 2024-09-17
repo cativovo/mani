@@ -7,7 +7,7 @@
 	import { onMount } from "svelte";
 	import Editor from "./Editor.svelte";
 	import JqQuery from "./JQQuery.svelte";
-	import JsonHighlighter from "./JSONHighlighter.svelte";
+	import JqResult from "./JQResult.svelte";
 	import { Button } from "./ui/button";
 	import {
 		ResizableHandle,
@@ -74,7 +74,7 @@
 					</ResizablePane>
 					<ResizableHandle />
 					<ResizablePane defaultSize={80}>
-						<JsonHighlighter json={jqResult} />
+						<JqResult value={jqResult} />
 					</ResizablePane>
 				</ResizablePaneGroup>
 			</ResizablePane>
