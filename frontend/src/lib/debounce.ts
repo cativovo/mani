@@ -1,6 +1,6 @@
 export default function debounce<T extends (...p: Parameters<T>) => void>(
   cb: T,
-  ms = 300,
+  ms = 150,
 ) {
   let id: number;
 
