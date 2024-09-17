@@ -24,7 +24,7 @@
 	}
 </script>
 
-<div class="relative h-full group">
+<div class="relative py-2 h-full group">
 	{#if value !== ""}
 		<div
 			class="flex absolute top-2 right-4 invisible z-50 flex-col gap-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100"
