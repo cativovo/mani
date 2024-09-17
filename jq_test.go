@@ -18,98 +18,98 @@ func TestRunQuery(t *testing.T) {
 	testCases := []struct {
 		name         string
 		json         string
-		filter       string
+		query        string
 		flags        JQFlags
 		validateJSON bool
 	}{
 		{
 			name:         "valid filter",
 			json:         bulbasaur,
-			filter:       ".name",
+			query:        ".name",
 			validateJSON: true,
 		},
 		{
 			name:         "invalid filter",
 			json:         bulbasaur,
-			filter:       "jkjkjkjkjkjk",
+			query:        "jkjkjkjkjkjk",
 			validateJSON: false,
 		},
 		{
 			name:         "indent array input",
 			json:         gen1Starters,
-			filter:       ".",
+			query:        ".",
 			validateJSON: true,
 		},
 		{
 			name:         "indent key value input",
 			json:         bulbasaur,
-			filter:       ".",
+			query:        ".",
 			validateJSON: true,
 		},
 		{
 			name:         "unpack array",
 			json:         gen1Starters,
-			filter:       ".[]",
+			query:        ".[]",
 			validateJSON: false,
 		},
 		{
-			name:   "compact array input",
-			json:   gen1Starters,
-			filter: ".",
+			name:  "compact array input",
+			json:  gen1Starters,
+			query: ".",
 			flags: JQFlags{
 				Compact: true,
 			},
 			validateJSON: true,
 		},
 		{
-			name:   "compact key value input",
-			json:   bulbasaur,
-			filter: ".",
+			name:  "compact key value input",
+			json:  bulbasaur,
+			query: ".",
 			flags: JQFlags{
 				Compact: true,
 			},
 			validateJSON: true,
 		},
 		{
-			name:   "compact unpack array",
-			json:   gen1Starters,
-			filter: ".[]",
+			name:  "compact unpack array",
+			json:  gen1Starters,
+			query: ".[]",
 			flags: JQFlags{
 				Compact: true,
 			},
 			validateJSON: false,
 		},
 		{
-			name:   "cooked",
-			json:   gen1Starters,
-			filter: ".[].name",
+			name:  "cooked",
+			json:  gen1Starters,
+			query: ".[].name",
 			flags: JQFlags{
 				Raw: false,
 			},
 			validateJSON: false,
 		},
 		{
-			name:   "it's fucking raw",
-			json:   gen1Starters,
-			filter: ".[].name",
+			name:  "it's fucking raw",
+			json:  gen1Starters,
+			query: ".[].name",
 			flags: JQFlags{
 				Raw: true,
 			},
 			validateJSON: false,
 		},
 		{
-			name:   "slurp",
-			json:   bulbasaur + charmander + squirtle,
-			filter: ".",
+			name:  "slurp",
+			json:  bulbasaur + charmander + squirtle,
+			query: ".",
 			flags: JQFlags{
 				Slurp: true,
 			},
 			validateJSON: true,
 		},
 		{
-			name:   "compact and slurp",
-			json:   bulbasaur + charmander + squirtle,
-			filter: ".",
+			name:  "compact and slurp",
+			json:  bulbasaur + charmander + squirtle,
+			query: ".",
 			flags: JQFlags{
 				Compact: true,
 				Slurp:   true,
@@ -117,9 +117,9 @@ func TestRunQuery(t *testing.T) {
 			validateJSON: true,
 		},
 		{
-			name:   "raw and slurp",
-			json:   bulbasaur + charmander + squirtle,
-			filter: ".[].name",
+			name:  "raw and slurp",
+			json:  bulbasaur + charmander + squirtle,
+			query: ".[].name",
 			flags: JQFlags{
 				Raw:   true,
 				Slurp: true,
@@ -127,9 +127,9 @@ func TestRunQuery(t *testing.T) {
 			validateJSON: false,
 		},
 		{
-			name:   "invalid json",
-			json:   `{"yot":}`,
-			filter: ".",
+			name:  "invalid json",
+			json:  `{"yot":}`,
+			query: ".",
 		},
 		{
 			name: "invalid json with slurp",
@@ -137,13 +137,13 @@ func TestRunQuery(t *testing.T) {
 			flags: JQFlags{
 				Slurp: true,
 			},
-			filter: ".",
+			query: ".",
 		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			result := RunQuery(testCase.json, testCase.filter, testCase.flags)
+			result := RunQuery(testCase.json, testCase.query, testCase.flags)
 
 			if testCase.validateJSON && !json.Valid([]byte(result)) {
 				t.Error("produced an invalid json")
