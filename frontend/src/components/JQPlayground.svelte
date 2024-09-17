@@ -42,7 +42,11 @@
 		editor.setValue(formatJson(json));
 	}
 
-	$: debouncedQuery(json, query, flags);
+	$: if (json) {
+		debouncedQuery(json, query, flags);
+	} else {
+		jqResult = "";
+	}
 
 	onMount(() => {
 		GetInitialContent().then((v) => editor.setValue(formatJson(v)));

@@ -126,6 +126,19 @@ func TestRunQuery(t *testing.T) {
 			},
 			validateJSON: false,
 		},
+		{
+			name:   "invalid json",
+			json:   `{"yot":}`,
+			filter: ".",
+		},
+		{
+			name: "invalid json with slurp",
+			json: `{"yot":true}{"foo":}`,
+			flags: JQFlags{
+				Slurp: true,
+			},
+			filter: ".",
+		},
 	}
 
 	for _, testCase := range testCases {

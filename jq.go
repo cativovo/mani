@@ -27,7 +27,7 @@ func RunQuery(j string, queryString string, flags JQFlags) string {
 	var input any
 	input, err = getInput(j, flags.Slurp)
 	if err != nil {
-		return ""
+		return err.Error()
 	}
 
 	iter := query.Run(input)
