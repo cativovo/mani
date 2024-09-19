@@ -1,9 +1,5 @@
 <script lang="ts">
-	import { DownloadJQResult } from "$wails/go/main/App";
-	import { Download } from "lucide-svelte";
-	import CopyButton from "./CopyButton.svelte";
 	import Editor from "./Editor.svelte";
-	import { Button } from "./ui/button";
 
 	export let value: string = "";
 
@@ -18,22 +14,8 @@
 	$: if (editor) {
 		editor.setValue(value);
 	}
-
-	function download() {
-		DownloadJQResult(value);
-	}
 </script>
 
 <div class="relative py-2 h-full group">
-	{#if value !== ""}
-		<div
-			class="flex absolute top-2 right-4 invisible z-50 flex-col gap-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100"
-		>
-			<CopyButton toCopy={value} />
-			<Button variant="outline" size="icon" on:click={download}>
-				<Download class="text-gray-500" />
-			</Button>
-		</div>
-	{/if}
-	<Editor {options} bind:this={editor} />
+	<Editor bind:value {options} bind:this={editor} />
 </div>

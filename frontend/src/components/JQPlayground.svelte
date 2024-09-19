@@ -4,7 +4,7 @@
 	import readFileContents from "$/lib/read-file-contents";
 	import { GetInitialContent, Query } from "$wails/go/main/App";
 	import type { main } from "$wails/go/models";
-	import { Braces, FolderOpenDot } from "lucide-svelte";
+	import { FolderOpenDot } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import Editor from "./Editor.svelte";
 	import JqQuery from "./JQQuery.svelte";
@@ -38,10 +38,6 @@
 		},
 	);
 
-	function format() {
-		editor.setValue(formatJson(json));
-	}
-
 	$: if (json) {
 		debouncedQuery(json, query, flags);
 	} else {
@@ -71,10 +67,6 @@
 		>
 			<FolderOpenDot className="text-gray-500" />
 			<span>Open file(s)</span>
-		</Button>
-		<Button variant="outline" class="space-x-1" on:click={format}>
-			<Braces className="text-gray-500" />
-			<span>Format</span>
 		</Button>
 	</div>
 	<div class="h-[calc(100%-theme(space.14))] w-full">

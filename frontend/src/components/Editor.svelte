@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { ChevronDown, ChevronUp } from "lucide-svelte";
+	import formatJson from "$/lib/format-json";
+	import { cn } from "$/lib/ui-utils";
+	import { DownloadJQResult } from "$wails/go/main/App";
+	import { Braces, ChevronDown, ChevronUp, Download } from "lucide-svelte";
 	import * as monaco from "monaco-editor";
 	import { onMount } from "svelte";
+	import CopyButton from "./CopyButton.svelte";
 	import { Button } from "./ui/button";
 	import { ScrollArea } from "./ui/scroll-area";
 
@@ -21,6 +25,7 @@
 	let editor: monaco.editor.IStandaloneCodeEditor;
 
 	let isDiagnosticsOpen = false;
+	let isCopyAlertVisible = false;
 	let diagnostics: Array<monaco.editor.IMarker> = [];
 
 	function toggleDrawer() {
@@ -67,6 +72,15 @@
 		});
 	}
 
+	function download() {
+		DownloadJQResult(value);
+	}
+
+	function format() {
+		value = formatJson(value);
+		editor.setValue(value);
+	}
+
 	onMount(() => {
 		editor = monaco.editor.create(editorElement, {
 			minimap: { enabled: false },
@@ -96,6 +110,25 @@
 </script>
 
 <div class="flex overflow-hidden relative flex-col h-full">
+	{#if value !== ""}
+		<div
+			class={cn(
+				"flex absolute top-2 right-4 z-50 flex-col gap-2 p-2 transition-opacity",
+				isCopyAlertVisible ? "opacity-100" : "opacity-0 hover:opacity-100",
+			)}
+		>
+			<CopyButton
+				toCopy={value}
+				on:copy={(e) => (isCopyAlertVisible = e.detail)}
+			/>
+			<Button variant="outline" size="icon" on:click={download}>
+				<Download class="text-gray-500" />
+			</Button>
+			<Button variant="outline" size="icon" on:click={format}>
+				<Braces className="text-gray-500" />
+			</Button>
+		</div>
+	{/if}
 	<div
 		class={isDiagnosticsOpen ? "h-3/4" : "h-full"}
 		bind:this={editorElement}

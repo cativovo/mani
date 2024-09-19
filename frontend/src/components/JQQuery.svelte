@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from "$/lib/ui-utils";
 	import { main } from "$wails/go/models";
 	import CopyButton from "./CopyButton.svelte";
 	import { Checkbox } from "./ui/checkbox";
@@ -29,6 +30,8 @@
 		raw: false,
 		slurp: false,
 	};
+
+	let isCopyAlertVisible = false;
 
 	function getToCopy(q: string, f: main.JQFlags): string {
 		const result = Object.entries(f)
@@ -68,10 +71,14 @@
 	}
 </script>
 
-<div class="relative h-full group">
+<div class="relative h-full">
 	<CopyButton
-		class="absolute top-4 right-4 invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100"
+		class={cn(
+			"absolute top-4 right-4 transition-opacity p-2",
+			isCopyAlertVisible ? "opacity-100" : "opacity-0 hover:opacity-100",
+		)}
 		{toCopy}
+		on:copy={(e) => (isCopyAlertVisible = e.detail)}
 	/>
 	<Textarea
 		class="h-3/4 resize-none"
