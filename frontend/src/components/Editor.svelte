@@ -4,22 +4,13 @@
 	import { DownloadJQResult } from "$wails/go/main/App";
 	import { Braces, ChevronDown, ChevronUp, Save } from "lucide-svelte";
 	import * as monaco from "monaco-editor";
-	import { onMount } from "svelte";
+	import { afterUpdate, onMount } from "svelte";
 	import CopyButton from "./CopyButton.svelte";
 	import { Button } from "./ui/button";
 	import { ScrollArea } from "./ui/scroll-area";
 
 	export let value: string = "";
 	export let options: monaco.editor.IStandaloneEditorConstructionOptions = {};
-	export function setValue(value: string) {
-		editor?.setValue(value);
-	}
-	export function setLanguage(language: string) {
-		const model = editor?.getModel();
-		if (model) {
-			monaco.editor.setModelLanguage(model, language);
-		}
-	}
 
 	let editorElement: HTMLDivElement;
 	let editor: monaco.editor.IStandaloneCodeEditor;
@@ -27,20 +18,25 @@
 	let isDiagnosticsOpen = false;
 	let isCopyAlertVisible = false;
 	let diagnostics: Array<monaco.editor.IMarker> = [];
+	let disposables: Array<monaco.IDisposable> = [];
 
 	function toggleDrawer() {
 		isDiagnosticsOpen = !isDiagnosticsOpen;
 	}
 
-	function addOnChangeHandler(ed: monaco.editor.IStandaloneCodeEditor) {
-		ed.onDidChangeModelContent(async () => {
+	function addOnChangeHandler(
+		ed: monaco.editor.IStandaloneCodeEditor,
+	): monaco.IDisposable {
+		return ed.onDidChangeModelContent(async () => {
 			value = ed.getValue();
 		});
 	}
 
-	function addOnValidateHandler(ed: monaco.editor.IStandaloneCodeEditor) {
+	function addOnValidateHandler(
+		ed: monaco.editor.IStandaloneCodeEditor,
+	): monaco.IDisposable {
 		// https://github.com/suren-atoyan/monaco-react/blob/f7cac39fbad0f062dc66458831aaf57a7126dd40/src/Editor/Editor.tsx#L221
-		monaco.editor.onDidChangeMarkers((uris) => {
+		return monaco.editor.onDidChangeMarkers((uris) => {
 			const editorUri = ed.getModel()?.uri;
 			if (!editorUri) {
 				return;
@@ -81,6 +77,15 @@
 		editor.setValue(value);
 	}
 
+	// TODO:
+	// call ondestroy?
+	// should not be called when just changing tabs
+	function dispose() {
+		disposables.forEach((d) => d.dispose());
+		editor.getModel()?.dispose();
+		editor.dispose();
+	}
+
 	onMount(() => {
 		editor = monaco.editor.create(editorElement, {
 			minimap: { enabled: false },
@@ -99,13 +104,28 @@
 		});
 
 		if (!options.readOnly) {
-			addOnChangeHandler(editor);
-			addOnValidateHandler(editor);
+			disposables.push(addOnChangeHandler(editor));
+			disposables.push(addOnValidateHandler(editor));
+			disposables = disposables;
+		}
+	});
+
+	afterUpdate(() => {
+		if (options.readOnly) {
+			editor.setValue(value);
+			return;
 		}
 
-		return () => {
-			editor.dispose();
-		};
+		if (value !== editor.getValue()) {
+			editor.executeEdits("", [
+				{
+					range: editor.getModel()!.getFullModelRange(),
+					text: value,
+					forceMoveMarkers: true,
+				},
+			]);
+			editor.pushUndoStop();
+		}
 	});
 </script>
 

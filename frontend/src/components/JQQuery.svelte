@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { cn } from "$/lib/ui-utils";
 	import { main } from "$wails/go/models";
+	import { createEventDispatcher } from "svelte";
 	import CopyButton from "./CopyButton.svelte";
 	import { Checkbox } from "./ui/checkbox";
 	import { Textarea, type FormTextareaEvent } from "./ui/textarea";
@@ -30,6 +31,10 @@
 		raw: false,
 		slurp: false,
 	};
+
+	const dispatch = createEventDispatcher<{
+		flagchange: main.JQFlags;
+	}>();
 
 	let isCopyAlertVisible = false;
 
@@ -61,7 +66,7 @@
 				return;
 			}
 
-			flags = { ...flags, [flag]: checked };
+			dispatch("flagchange", { ...flags, [flag]: checked });
 		};
 	}
 
