@@ -2,7 +2,7 @@
 	import formatJson from "$/lib/format-json";
 	import { cn } from "$/lib/ui-utils";
 	import { DownloadJQResult } from "$wails/go/main/App";
-	import { Braces, ChevronDown, ChevronUp, Download } from "lucide-svelte";
+	import { Braces, ChevronDown, ChevronUp, Save } from "lucide-svelte";
 	import * as monaco from "monaco-editor";
 	import { onMount } from "svelte";
 	import CopyButton from "./CopyButton.svelte";
@@ -122,10 +122,10 @@
 				on:copy={(e) => (isCopyAlertVisible = e.detail)}
 			/>
 			<Button variant="outline" size="icon" on:click={download}>
-				<Download class="text-gray-500" />
+				<Save class="text-gray-500" />
 			</Button>
 			<Button variant="outline" size="icon" on:click={format}>
-				<Braces className="text-gray-500" />
+				<Braces class="text-gray-500" />
 			</Button>
 		</div>
 	{/if}
