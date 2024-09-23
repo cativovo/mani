@@ -18,7 +18,6 @@
 	let isDiagnosticsOpen = false;
 	let isCopyAlertVisible = false;
 	let diagnostics: Array<monaco.editor.IMarker> = [];
-	let disposables: Array<monaco.IDisposable> = [];
 
 	function toggleDrawer() {
 		isDiagnosticsOpen = !isDiagnosticsOpen;
@@ -77,15 +76,6 @@
 		editor.setValue(value);
 	}
 
-	// TODO:
-	// call ondestroy?
-	// should not be called when just changing tabs
-	function dispose() {
-		disposables.forEach((d) => d.dispose());
-		editor.getModel()?.dispose();
-		editor.dispose();
-	}
-
 	onMount(() => {
 		editor = monaco.editor.create(editorElement, {
 			minimap: { enabled: false },
@@ -103,11 +93,17 @@
 			...options,
 		});
 
+		const disposables: Array<monaco.IDisposable> = [];
 		if (!options.readOnly) {
 			disposables.push(addOnChangeHandler(editor));
 			disposables.push(addOnValidateHandler(editor));
-			disposables = disposables;
 		}
+
+		return () => {
+			disposables.forEach((d) => d.dispose());
+			editor.getModel()?.dispose();
+			editor.dispose();
+		};
 	});
 
 	afterUpdate(() => {
