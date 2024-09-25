@@ -410,3 +410,11 @@ Bulbasaur
 Charmander
 Squirtle
 ---
+
+[TestRunQuery/invalid_json - 1]
+invalid character '}' looking for beginning of value
+---
+
+[TestRunQuery/invalid_json_with_slurp - 1]
+invalid character '}' looking for beginning of value
+---
