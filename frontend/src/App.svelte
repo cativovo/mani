@@ -18,7 +18,7 @@
 
 	let inputFileElement: HTMLInputElement;
 
-	let currentTab: number;
+	let activeTab: number;
 	let id = 0;
 	let tabs: Array<Tab> = [];
 
@@ -41,7 +41,7 @@
 		};
 		id++;
 		tabs = [...tabs, tab];
-		currentTab = tabs.length - 1;
+		activeTab = tabs.length - 1;
 	}
 
 	async function handleFileChange(e: Event) {
@@ -54,14 +54,20 @@
 	}
 
 	function closeTab(id: number) {
-		// FIXME: doesn't automatically focus on last remaining tab
 		const i = tabs.findIndex((tab) => tab.id === id);
 		if (i > -1) {
 			tabs = tabs.toSpliced(i, 1);
 			if (i > 0) {
-				currentTab = i - 1;
+				activeTab = i - 1;
 			}
 		}
+	}
+
+	function handleTabChange(tab?: string) {
+		if (!tab) {
+			return;
+		}
+		activeTab = parseInt(tab);
 	}
 
 	// always creates new tab
@@ -74,7 +80,8 @@
 
 <main class="w-screen h-screen">
 	<Tabs.Root
-		value={currentTab ? currentTab.toString() : undefined}
+		value={activeTab?.toString()}
+		onValueChange={handleTabChange}
 		class="w-full h-full"
 	>
 		<div class="flex gap-2 items-center px-2 h-14 bg-gray-100">
@@ -98,10 +105,7 @@
 			<ScrollArea orientation="horizontal" class="max-w-80">
 				<Tabs.List>
 					{#each tabs as tab, i (tab.id)}
-						<Tabs.Trigger
-							value={i.toString()}
-							on:click={() => (currentTab = i)}
-						>
+						<Tabs.Trigger value={i.toString()} on:click={() => (activeTab = i)}>
 							{i + 1}
 						</Tabs.Trigger>
 					{/each}
