@@ -1,13 +1,13 @@
 <script lang="ts">
+	import CopyButton from "$/components/CopyButton.svelte";
+	import { Button } from "$/components/ui/button";
+	import { ScrollArea } from "$/components/ui/scroll-area";
 	import formatJson from "$/lib/format-json";
 	import { cn } from "$/lib/ui-utils";
 	import { DownloadJQResult } from "$wails/go/main/App";
 	import { Braces, ChevronDown, ChevronUp, Save } from "lucide-svelte";
 	import * as monaco from "monaco-editor";
 	import { afterUpdate, onMount } from "svelte";
-	import CopyButton from "./CopyButton.svelte";
-	import { Button } from "./ui/button";
-	import { ScrollArea } from "./ui/scroll-area";
 
 	export let value: string = "";
 	export let options: monaco.editor.IStandaloneEditorConstructionOptions = {};

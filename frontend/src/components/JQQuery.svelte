@@ -1,10 +1,10 @@
 <script lang="ts">
+	import CopyButton from "$/components/CopyButton.svelte";
+	import { Checkbox } from "$/components/ui/checkbox";
+	import { Textarea, type FormTextareaEvent } from "$/components/ui/textarea";
 	import { cn } from "$/lib/ui-utils";
 	import { main } from "$wails/go/models";
 	import { createEventDispatcher } from "svelte";
-	import CopyButton from "./CopyButton.svelte";
-	import { Checkbox } from "./ui/checkbox";
-	import { Textarea, type FormTextareaEvent } from "./ui/textarea";
 
 	type FlagData = {
 		label: string;

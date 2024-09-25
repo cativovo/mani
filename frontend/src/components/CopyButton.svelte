@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { Button } from "$/components/ui/button";
 	import { cn } from "$/lib/ui-utils";
 	import { ClipboardSetText } from "$wails/runtime/runtime";
 	import { Clipboard, ClipboardCheck } from "lucide-svelte";
 	import { createEventDispatcher } from "svelte";
-	import { Button } from "./ui/button";
 
 	export let toCopy: string = "";
 

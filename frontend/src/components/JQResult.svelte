@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Editor from "./Editor.svelte";
+	import Editor from "$/components/Editor.svelte";
 
 	export let value: string = "";
 

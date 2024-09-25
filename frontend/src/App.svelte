@@ -1,5 +1,6 @@
 <script lang="ts">
 	import JqPlayground from "$/components/JQPlayground.svelte";
+	import { Button } from "$/components/ui/button";
 	import ScrollArea from "$/components/ui/scroll-area/scroll-area.svelte";
 	import * as Tabs from "$/components/ui/tabs";
 	import formatJson from "$/lib/format-json";
@@ -8,7 +9,6 @@
 	import type { main } from "$wails/go/models";
 	import { CirclePlus, CircleX, FolderOpenDot } from "lucide-svelte";
 	import { onMount } from "svelte";
-	import { Button } from "./components/ui/button";
 
 	type Tab = {
 		id: number;

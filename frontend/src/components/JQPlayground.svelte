@@ -1,15 +1,11 @@
 <script lang="ts">
+	import Editor from "$/components/Editor.svelte";
+	import JqQuery from "$/components/JQQuery.svelte";
+	import JqResult from "$/components/JQResult.svelte";
+	import * as Resizable from "$/components/ui/resizable";
 	import debounce from "$/lib/debounce";
 	import { Query } from "$wails/go/main/App";
 	import type { main } from "$wails/go/models";
-	import Editor from "./Editor.svelte";
-	import JqQuery from "./JQQuery.svelte";
-	import JqResult from "./JQResult.svelte";
-	import {
-		ResizableHandle,
-		ResizablePane,
-		ResizablePaneGroup,
-	} from "./ui/resizable";
 
 	export let flags: Partial<main.JQFlags> = {};
 	export let json: string;
@@ -40,24 +36,24 @@
 	}
 </script>
 
-<ResizablePaneGroup direction="horizontal">
-	<ResizablePane defaultSize={50} class="p-2">
+<Resizable.PaneGroup direction="horizontal">
+	<Resizable.Pane defaultSize={50} class="p-2">
 		<Editor bind:value={json} />
-	</ResizablePane>
-	<ResizableHandle withHandle />
-	<ResizablePane defaultSize={50}>
-		<ResizablePaneGroup direction="vertical">
-			<ResizablePane defaultSize={20} class="p-2">
+	</Resizable.Pane>
+	<Resizable.Handle withHandle />
+	<Resizable.Pane defaultSize={50}>
+		<Resizable.PaneGroup direction="vertical">
+			<Resizable.Pane defaultSize={20} class="p-2">
 				<JqQuery
 					bind:query
 					on:flagchange
 					flags={mergeWithDefaultFlags(flags)}
 				/>
-			</ResizablePane>
-			<ResizableHandle withHandle />
-			<ResizablePane defaultSize={80}>
+			</Resizable.Pane>
+			<Resizable.Handle withHandle />
+			<Resizable.Pane defaultSize={80}>
 				<JqResult value={jqResult} />
-			</ResizablePane>
-		</ResizablePaneGroup>
-	</ResizablePane>
-</ResizablePaneGroup>
+			</Resizable.Pane>
+		</Resizable.PaneGroup>
+	</Resizable.Pane>
+</Resizable.PaneGroup>
